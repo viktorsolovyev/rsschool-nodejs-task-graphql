@@ -3,7 +3,7 @@ import {
   memberTypeType,
   memberTypesType,
   MemberTypeId,
-} from './memberTypes/memberTypes.js';
+} from './member-types/memberTypes.js';
 import { PostType, PostListType } from './posts/posts.js';
 import { UserType, UserListType } from './users/users.js';
 import { Context } from './types/context.type.js';
