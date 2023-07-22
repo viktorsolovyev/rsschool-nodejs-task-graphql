@@ -6,6 +6,7 @@ import {
 } from './member-types/memberTypes.js';
 import { PostType, PostListType } from './posts/posts.js';
 import { UserType, UserListType } from './users/users.js';
+import { ProfileType, ProfileListType } from './profiles/profiles.js';
 import { Context } from './types/context.type.js';
 import { UUIDType } from './types/uuid.js';
 
@@ -53,23 +54,43 @@ export const rootQuery = new GraphQLObjectType({
     },
 
     user: {
-        type: UserType,
-        args: {
-          id: { type: UUIDType },
-        },
-  
-        async resolve(parent, args: { id: string }, ctx: Context) {
-          return await ctx.prisma.user.findUnique({
-            where: { id: args.id },
-          });
-        },
+      type: UserType,
+      args: {
+        id: { type: UUIDType },
       },
-  
-      users: {
-        type: UserListType,
-        async resolve(parent, args, ctx: Context) {
-          return await ctx.prisma.user.findMany();
-        },
+
+      async resolve(parent, args: { id: string }, ctx: Context) {
+        return await ctx.prisma.user.findUnique({
+          where: { id: args.id },
+        });
       },
+    },
+
+    users: {
+      type: UserListType,
+      async resolve(parent, args, ctx: Context) {
+        return await ctx.prisma.user.findMany();
+      },
+    },
+
+    profile: {
+      type: ProfileType,
+      args: {
+        id: { type: UUIDType },
+      },
+
+      async resolve(parent, args: { id: string }, ctx: Context) {
+        return await ctx.prisma.profile.findUnique({
+          where: { id: args.id },
+        });
+      },
+    },
+
+    profiles: {
+      type: ProfileListType,
+      async resolve(parent, args, ctx: Context) {
+        return await ctx.prisma.profile.findMany();
+      },
+    },
   },
 });
