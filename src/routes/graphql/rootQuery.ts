@@ -1,5 +1,5 @@
 import { GraphQLNonNull, GraphQLObjectType } from 'graphql';
-import { memberTypeType, memberTypesType, MemberTypeId } from './types/memberTypes.js';
+import { memberTypeType, memberTypesType, MemberTypeId } from './memberTypes/memberTypes.js';
 import { Context } from './types/context.type.js';
 
 export const rootQuery = new GraphQLObjectType({
