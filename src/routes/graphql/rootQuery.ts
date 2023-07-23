@@ -54,6 +54,7 @@ export const rootQuery = new GraphQLObjectType({
     },
 
     user: {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       type: UserType,
       args: {
         id: { type: UUIDType },
