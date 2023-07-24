@@ -5,6 +5,8 @@ import { createUserInput } from './users/inputs.js';
 import { PostType } from './posts/posts.js';
 import { createPostInput } from './posts/inputs.js';
 import { UUID } from 'crypto';
+import { ProfileType } from './profiles/profiles.js';
+import { createProfileInput } from './profiles/inputs.js';
 
 export const rootMutation = new GraphQLObjectType({
   name: 'Mutation',
@@ -34,6 +36,27 @@ export const rootMutation = new GraphQLObjectType({
         ctx: Context,
       ) {
         return await ctx.prisma.post.create({ data: args.dto });
+      },
+    },
+
+    createProfile: {
+      type: ProfileType,
+      args: {
+        dto: { type: createProfileInput },
+      },
+      async resolve(
+        root,
+        args: {
+          dto: {
+            userId: UUID;
+            memberTypeId: string;
+            isMale: boolean;
+            yearOfBirth: number;
+          };
+        },
+        ctx: Context,
+      ) {
+        return await ctx.prisma.profile.create({ data: args.dto });
       },
     },
   },
