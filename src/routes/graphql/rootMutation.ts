@@ -2,6 +2,9 @@ import { GraphQLObjectType } from 'graphql';
 import { UserType } from './users/users.js';
 import { Context } from './types/context.type.js';
 import { createUserInput } from './users/inputs.js';
+import { PostType } from './posts/posts.js';
+import { createPostInput } from './posts/inputs.js';
+import { UUID } from 'crypto';
 
 export const rootMutation = new GraphQLObjectType({
   name: 'Mutation',
@@ -17,6 +20,20 @@ export const rootMutation = new GraphQLObjectType({
         ctx: Context,
       ) {
         return await ctx.prisma.user.create({ data: args.dto });
+      },
+    },
+
+    createPost: {
+      type: PostType,
+      args: {
+        dto: { type: createPostInput },
+      },
+      async resolve(
+        root,
+        args: { dto: { authorId: UUID; content: string; title: string } },
+        ctx: Context,
+      ) {
+        return await ctx.prisma.post.create({ data: args.dto });
       },
     },
   },
