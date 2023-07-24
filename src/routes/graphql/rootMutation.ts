@@ -53,6 +53,32 @@ export const rootMutation = new GraphQLObjectType({
       },
     },
 
+    subscribeTo: {
+      type: UserType,
+      args: { userId: { type: UUIDType }, authorId: { type: UUIDType } },
+      async resolve(root, args: { userId: UUID; authorId: UUID }, ctx: Context) {
+        await ctx.prisma.subscribersOnAuthors.create({
+          data: { subscriberId: args.userId, authorId: args.authorId },
+        });
+        return await ctx.prisma.user.findUnique({ where: { id: args.userId } });
+      },
+    },
+
+    unsubscribeFrom: {
+      type: GraphQLBoolean,
+      args: { userId: { type: UUIDType }, authorId: { type: UUIDType } },
+      async resolve(root, args: { userId: UUID; authorId: UUID }, ctx: Context) {
+        try {
+          await ctx.prisma.subscribersOnAuthors.deleteMany({
+            where: { subscriberId: args.userId, authorId: args.authorId },
+          });
+        } catch {
+          return false;
+        }
+        return true;
+      },
+    },
+
     createPost: {
       type: PostType,
       args: {
