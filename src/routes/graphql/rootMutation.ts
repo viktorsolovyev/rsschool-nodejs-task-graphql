@@ -1,4 +1,4 @@
-import { GraphQLObjectType } from 'graphql';
+import { GraphQLBoolean, GraphQLObjectType } from 'graphql';
 import { UserType } from './users/users.js';
 import { Context } from './types/context.type.js';
 import { createUserInput } from './users/inputs.js';
@@ -7,6 +7,7 @@ import { createPostInput } from './posts/inputs.js';
 import { UUID } from 'crypto';
 import { ProfileType } from './profiles/profiles.js';
 import { createProfileInput } from './profiles/inputs.js';
+import { UUIDType } from './types/uuid.js';
 
 export const rootMutation = new GraphQLObjectType({
   name: 'Mutation',
@@ -36,6 +37,21 @@ export const rootMutation = new GraphQLObjectType({
         ctx: Context,
       ) {
         return await ctx.prisma.post.create({ data: args.dto });
+      },
+    },
+
+    deletePost: {
+      type: GraphQLBoolean,
+      args: {
+        id: { type: UUIDType },
+      },
+      async resolve(root, args: { id: string }, ctx: Context) {
+        try {
+          await ctx.prisma.post.delete({ where: { id: args.id } });
+        } catch {
+          return false;
+        }
+        return true;
       },
     },
 
