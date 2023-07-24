@@ -1,12 +1,12 @@
 import { GraphQLBoolean, GraphQLObjectType } from 'graphql';
 import { UserType } from './users/users.js';
 import { Context } from './types/context.type.js';
-import { createUserInput } from './users/inputs.js';
+import { changeUserInput, createUserInput } from './users/inputs.js';
 import { PostType } from './posts/posts.js';
 import { createPostInput, changePostInput } from './posts/inputs.js';
 import { UUID } from 'crypto';
 import { ProfileType } from './profiles/profiles.js';
-import { createProfileInput } from './profiles/inputs.js';
+import { changeProfileInput, createProfileInput } from './profiles/inputs.js';
 import { UUIDType } from './types/uuid.js';
 
 export const rootMutation = new GraphQLObjectType({
@@ -23,6 +23,18 @@ export const rootMutation = new GraphQLObjectType({
         ctx: Context,
       ) {
         return await ctx.prisma.user.create({ data: args.dto });
+      },
+    },
+
+    changeUser: {
+      type: UserType,
+      args: { id: { type: UUIDType }, dto: { type: changeUserInput } },
+      async resolve(
+        root,
+        args: { id: UUID; dto: { name: string; balance: number } },
+        ctx: Context,
+      ) {
+        return await ctx.prisma.user.update({ where: { id: args.id }, data: args.dto });
       },
     },
 
@@ -63,7 +75,7 @@ export const rootMutation = new GraphQLObjectType({
         args: { id: UUID; dto: { authorId: UUID; content: string; title: string } },
         ctx: Context,
       ) {
-        await ctx.prisma.post.update({ where: { id: args.id }, data: args.dto });
+        return await ctx.prisma.post.update({ where: { id: args.id }, data: args.dto });
       },
     },
 
@@ -100,6 +112,24 @@ export const rootMutation = new GraphQLObjectType({
         ctx: Context,
       ) {
         return await ctx.prisma.profile.create({ data: args.dto });
+      },
+    },
+
+    changeProfile: {
+      type: ProfileType,
+      args: { id: { type: UUIDType }, dto: { type: changeProfileInput } },
+      async resolve(
+        root,
+        args: {
+          id: UUID;
+          dto: { memberTypeId: string; isMale: boolean; yearOfBirth: number };
+        },
+        ctx: Context,
+      ) {
+        return await ctx.prisma.profile.update({
+          where: { id: args.id },
+          data: args.dto,
+        });
       },
     },
 
