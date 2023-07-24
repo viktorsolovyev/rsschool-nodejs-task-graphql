@@ -26,6 +26,21 @@ export const rootMutation = new GraphQLObjectType({
       },
     },
 
+    deleteUser: {
+      type: GraphQLBoolean,
+      args: {
+        id: { type: UUIDType },
+      },
+      async resolve(root, args: { id: string }, ctx: Context) {
+        try {
+          await ctx.prisma.user.delete({ where: { id: args.id } });
+        } catch {
+          return false;
+        }
+        return true;
+      },
+    },
+
     createPost: {
       type: PostType,
       args: {
